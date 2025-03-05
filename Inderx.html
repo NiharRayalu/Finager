@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finager Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="hamburger-menu">☰</div>
+            <h1 class="title">Finager</h1>
+            <button class="refresh-button" onclick="location.reload()">N</button>
+        </div>
+        <div class="content">
+            <div class="info">
+                <div class="date">
+                    <select class="dropdown">
+                        <option>Jan</option>
+                        <option>Feb</option>
+                        <option>Mar</option>
+                        <option>Apr</option>
+                        <option>May</option>
+                        <option>Jun</option>
+                        <option>Jul</option>
+                        <option>Aug</option>
+                        <option>Sep</option>
+                        <option>Oct</option>
+                        <option>Nov</option>
+                        <option>Dec</option>
+                    </select>
+                    <select class="dropdown">
+                        <option>2025</option>
+                        <option>2024</option>
+                        <option>2023</option>
+                        <option>2022</option>
+                    </select>
+                </div>
+                <div class="details">
+                    <p>Expenses: <span>₹0.00</span></p>
+                    <p>Transactions: <span>0</span></p>
+                    <div class="quote">
+                        "Money speaks in one language: <br>
+                        Save me today and I will save you tomorrow"
+                    </div>
+                </div>
+            </div>
+            <div class="graph-container">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
