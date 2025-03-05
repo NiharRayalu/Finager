@@ -12,3 +12,9 @@ Ever wanted to track your expenses, but tierd of manually writng down all the tr
 * Javascrpt file will plot the tracsations in a graph format.
 * With the help of CSS file website has been made user friendly.
 * HTML as usual acts as a skeleton of the website.
+## Technologies Used
+* Python
+* HTML
+* CSS
+* JavaScript
+* API
