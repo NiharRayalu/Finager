@@ -90,7 +90,7 @@ for num in mail_id_list:
 # https://stackoverflow.com/questions/1463074/how-can-i-get-an-email-messages-text-content-using-python
 
 # NOTE that a Message object consists of headers and payloads.
-output_file = "extracted_data.csv"
+output_file = "sample_extracted_data.csv"
 write_header = True  # Ensure header is written only once
 for msg in msgs[::-1]:
     for response_part in msg:
