@@ -1,6 +1,6 @@
 async function fetchCSVData() {
     try {
-      const response = await fetch('extracted_data.csv');
+      const response = await fetch('sample_extracted_data.csv');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
