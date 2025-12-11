@@ -1,57 +1,191 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finager Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finager</title>
+
+  <link rel="stylesheet" href="Style.css"/>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="hamburger-menu">☰</div>
-            <h1 class="title">Finager</h1>
-            <button class="refresh-button" onclick="location.reload()">N</button>
-        </div>
-        <div class="content">
-            <div class="info">
-                <div class="date">
-                    <select class="dropdown">
-                        <option>Jan</option>
-                        <option>Feb</option>
-                        <option>Mar</option>
-                        <option>Apr</option>
-                        <option>May</option>
-                        <option>Jun</option>
-                        <option>Jul</option>
-                        <option>Aug</option>
-                        <option>Sep</option>
-                        <option>Oct</option>
-                        <option>Nov</option>
-                        <option>Dec</option>
-                    </select>
-                    <select class="dropdown">
-                        <option>2025</option>
-                        <option>2024</option>
-                        <option>2023</option>
-                        <option>2022</option>
-                    </select>
-                </div>
-                <div class="details">
-                    <p>Expenses: <span>₹0.00</span></p>
-                    <p>Transactions: <span>0</span></p>
-                    <div class="quote">
-                        "Money speaks in one language: <br>
-                        Save me today and I will save you tomorrow"
-                    </div>
-                </div>
-            </div>
-            <div class="graph-container">
-                <canvas id="barChart"></canvas>
-            </div>
-        </div>
+  <!-- Sidebar / Drawer -->
+  <aside id="sidebar" class="sidebar" aria-label="Navigation Drawer">
+    <div class="sidebar-header">
+      <button id="closeSidebar" class="icon-btn" aria-label="Close Menu">✕</button>
+      <div class="brand" id="brandHome">Finager</div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+
+    <nav class="sidebar-nav">
+      <button class="nav-link active" data-view="dashboard" id="nav-dashboard">📊 Dashboard</button>
+      <button class="nav-link" data-view="calendar" id="nav-calendar">🗓️ Calendar</button>
+      <button class="nav-link" data-view="downloads" id="nav-downloads">⬇️ Downloads</button>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Dark mode toggle -->
+    <div class="sidebar-section">
+      <label class="switch-row">
+        <input type="checkbox" id="themeToggle" />
+        <span class="switch"></span>
+        <span class="switch-label">Dark mode</span>
+      </label>
+    </div>
+
+    <div class="sidebar-footer">v1.6</div>
+  </aside>
+
+  <!-- Header -->
+  <header class="app-header">
+    <button id="openSidebar" class="hamburger-menu" aria-label="menu">☰</button>
+    <h1 class="title" id="titleHome">Finager</h1>
+    <button class="refresh-button" title="Reload" aria-label="Reload">N</button>
+  </header>
+
+  <!-- Main -->
+  <main class="app-main">
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view current">
+      <div class="dash-layout">
+        <aside class="left-panel">
+          <div class="card soft">
+            <div class="filters stack">
+              <label class="label">Filters</label>
+              <div class="row">
+                <div class="select-wrap">
+                  <select id="monthSelect" class="dropdown">
+                    <option value="all">All</option>
+                    <option>Jan</option><option>Feb</option><option>Mar</option>
+                    <option>Apr</option><option>May</option><option>Jun</option>
+                    <option>Jul</option><option>Aug</option><option>Sep</option>
+                    <option>Oct</option><option>Nov</option><option>Dec</option>
+                  </select>
+                </div>
+                <div class="select-wrap">
+                  <select id="yearSelect" class="dropdown">
+                    <option value="all">All</option>
+                    <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
+                  </select>
+                </div>
+              </div>
+
+              <input id="searchInput" class="search" type="search" placeholder="Search receiver… (e.g., Amazon, Rent)" />
+            </div>
+
+            <div class="details compact">
+              <div class="detail-row"><span>Expenses</span> <strong id="totalAmount">₹0.00</strong></div>
+              <div class="detail-row"><span>Transactions</span> <strong id="totalTxns">0</strong></div>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi-card"><div class="kpi-label">Total (Filter)</div><div class="kpi-value" id="kpiTotal">₹0</div></div>
+              <div class="kpi-card"><div class="kpi-label">Transactions</div><div class="kpi-value" id="kpiTxns">0</div></div>
+              <div class="kpi-card"><div class="kpi-label">Avg / Txn</div><div class="kpi-value" id="kpiAvgTxn">₹0</div></div>
+              <div class="kpi-card"><div class="kpi-label">Avg / Day</div><div class="kpi-value" id="kpiAvgDay">₹0</div></div>
+              <div class="kpi-card"><div class="kpi-label">Max Day</div><div class="kpi-value" id="kpiMaxDay">₹0</div></div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="right-graph">
+          <div class="card chart-card">
+            <div class="card-title">Monthly Expenses</div>
+            <div class="chart-wrap">
+              <canvas id="barChart" aria-label="Monthly Expenses Line"></canvas>
+            </div>
+            <div id="emptyState" class="empty-state" hidden>No data to display for the selected filters.</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid-2 section-gap">
+        <div class="card">
+          <div class="card-title">Top Receivers</div>
+          <ul id="topReceivers" class="list-rows"></ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Recent Transactions</div>
+          <ul id="recentList" class="list-rows"></ul>
+        </div>
+      </div>
+
+      <div class="card section-gap">
+        <div class="card-title">Monthly Breakdown</div>
+        <div class="table-wrap">
+          <table class="table" id="monthTable">
+            <thead><tr><th>Month</th><th>Total</th><th>Transactions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="muted tiny">Tip: Click a month to set the dashboard filters.</div>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section id="view-calendar" class="view">
+      <div class="calendar-header">
+        <button id="calPrev" class="icon-btn" title="Previous Month">‹</button>
+        <div class="select-wrap small">
+          <select id="calMonthSelect" class="dropdown small" style="min-width:110px;"></select>
+        </div>
+        <div class="select-wrap small">
+          <select id="calYearSelect" class="dropdown small" style="min-width:110px;"></select>
+        </div>
+        <div id="calTitle" class="cal-title">Month YYYY</div>
+        <button id="calNext" class="icon-btn" title="Next Month">›</button>
+      </div>
+
+      <div class="calendar-wrap">
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-details" id="calendarDetails">
+          <h3 id="dayTitle">Select a day</h3>
+          <div class="day-total" id="dayTotal">Total: ₹0.00</div>
+          <ul id="dayTxList" class="tx-list">
+            <li class="muted">No transactions</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOWNLOADS -->
+    <section id="view-downloads" class="view">
+      <div class="downloads-center">
+        <div class="card card-narrow">
+          <h2 class="center">Download Transactions</h2>
+          <p class="muted center">Export the full history or a single month.</p>
+          <div class="dl-controls center-row">
+            <label>Month:
+              <div class="select-wrap small">
+                <select id="dlMonth" class="dropdown small">
+                  <option value="all">All months</option>
+                </select>
+              </div>
+            </label>
+            <label>Year:
+              <div class="select-wrap small">
+                <select id="dlYear" class="dropdown small">
+                  <option value="all">All years</option>
+                  <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
+                </select>
+              </div>
+            </label>
+          </div>
+          <div class="dl-actions center-row">
+            <button id="btnXlsx" class="primary">Download Excel (.xlsx)</button>
+            <button id="btnCsv" class="ghost">Download CSV</button>
+            <button id="btnExportCurrent" class="ghost">Export Current Filter</button>
+          </div>
+          <div id="dlFilenamePreview" class="muted tiny center">Filename will appear here</div>
+          <div id="dlHint" class="muted tiny center">Tip: “Export Current Filter” matches the dashboard’s month & year.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
